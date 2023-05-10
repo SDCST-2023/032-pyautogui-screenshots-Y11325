@@ -4,18 +4,20 @@ import pyautogui as p
 import time
 
 alarms = [0]
-delays = [10]
+delays = [15]
 start = time.time()
 alarms[0] = start + delays[0]
+
 
 def timer():
     while True:
         now = time.time()
         if now > alarms[0]:
-            print(f"{delays[0]} second alarm has been triggered (click stuff in menu)")
+            print(f"{delays[0]} second alarm has been triggered (click items in menu)")
             alarms[0] = now + delays[0]
         time.sleep(1)
         print(f"time elapsed is {round(time.time() - start,3)}")
+
 
 def CandyButton():
     time.sleep(0.005)
@@ -57,35 +59,39 @@ def store():
                     p.moveTo(i[0],i[1], 0.005)
                     p.click()
             
-            break
+            alarms[0] = now + delays[0]
+
+            location = p.locateCenterOnScreen('assets/CANDY.png', confidence = 0.8)
+            if location != None:
+                p.moveTo(location)
         else:
             pass
 
 
 def yellowcandy():
     while True:
-        yellowC = p.locateCenterOnScreen('assets/yellow candy.png', confidence = 0.7, grayscale = True)
+        yellowC = p.locateCenterOnScreen('assets/YC.png')
         if yellowC != None:
-                p.moveTo(yellowC[0],yellowC[1], 0.000001)
-                p.click()
-    #p.pixelMatchesColor((251, 221, 4))
- 
+            p.moveTo(yellowC)
+            p.click()
+
+
 def main():
     p.confirm("Click to start")
 
     process0 = multiprocessing.Process(target = timer)
     process1 = multiprocessing.Process(target = CandyButton)
-    #process2 = multiprocessing.Process(target = yellowcandy)
+    process2 = multiprocessing.Process(target = yellowcandy)
     process3 = multiprocessing.Process(target = store)
 
     process0.start()
     process1.start()
-    #process2.start()
+    process2.start()
     process3.start()
 
     process0.join()
     process1.join()
-    #process2.join()
+    process2.join()
     process3.join()
 
 
